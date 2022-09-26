@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 use std::fs;
-use std::path::{Path};
+use std::path::{Path, PathBuf};
 use directories::{BaseDirs, ProjectDirs};
 use std::io::Write;
 use serde_derive::Deserialize;
@@ -26,14 +26,14 @@ enum Commands {
 }
 
 fn expand_path(path_raw: &str) -> PathBuf {
-    let mut path = Path::new(path_raw);
+    let mut path = PathBuf::from(path_raw);
 
     if path_raw.starts_with("~") {
-        let mut path_chars = path.chars();
+        let mut path_chars = path_raw.chars();
         path_chars.next();
 
         if let Some(base_dirs) = BaseDirs::new() {
-            path = Path::new(base_dirs.home_dir()).join(path);
+            path = Path::new(base_dirs.home_dir().clone()).join(path);
         }
     }
 
